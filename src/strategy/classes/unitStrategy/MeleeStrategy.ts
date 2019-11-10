@@ -30,168 +30,154 @@ export default class MeleeStrategy implements IStrategy {
     return copyHP;
   }
   public doTargetSelection(unit: Unit, battleField: Array<Unit>): Array<Unit> {
-    if (unit._id > 5) {
-      let enemies: Array<Unit> = battleField.slice(0, 6);
-      const allies: Array<Unit> = battleField.slice(6, 12);
+    const unitPosition: number = unit._id;
+    const getTargets = (
+      allies: Array<Unit>,
+      enemies: Array<Unit>,
+      unitPosition: number
+    ): Array<Unit> => {
+      let alliesFirstLane: Array<Unit> = [];
+      let alliesSecondLane: Array<Unit> = [];
+      let enemiesSecondLane: Array<Unit> = [];
+      let enemiesFirstLane: Array<Unit> = [];
+      if (unitPosition <= 5) {
+        alliesFirstLane = allies.slice(3, 6);
+        alliesSecondLane = allies.slice(0, 3);
+        enemiesSecondLane = enemies.slice(3, 6);
+        enemiesFirstLane = enemies.slice(0, 3);
+      } else {
+        alliesFirstLane = allies.slice(0, 3);
+        alliesSecondLane = allies.slice(3, 6);
+        enemiesSecondLane = enemies.slice(0, 3);
+        enemiesFirstLane = enemies.slice(3, 6);
+      }
 
-      let alliesFirstLane: Array<Unit> = allies.slice(0, 3);
-      const alliesSecondLane: Array<Unit> = allies.slice(3, 6);
-      const enemiesSecondLane: Array<Unit> = enemies.slice(0, 3);
-      const enemiesFirstLane: Array<Unit> = enemies.slice(3, 6);
-      // const setTarget=(alliesFirstLane:Array<Unit>,unit:Unit,enemiesFirstLane:Array<Unit>):Array<Unit>=>{
-      //   return enemies
-      // }
-      const isInFirstLane = false;
-      for (let index = 0; index < 3; index++) {
-        console.log("index first lane", index);
-        if (alliesFirstLane[index]._id === unit._id) {
-          if (index === 1) {
-            console.log("in first lane center ");
-            const copy: Array<Unit> = [...enemiesFirstLane];
-            const targets: Array<Unit> = copy.filter(unit => unit._HP > 0);
-            enemies = targets;
-            break;
-          } else if (index === 0) {
-            console.log("in first lane left ");
-            const copyEnemiesFirstLane: Array<Unit> = [...enemiesFirstLane];
-            const aliveUnitCopyEnemiesFirstLane: Array<
-              Unit
-            > = copyEnemiesFirstLane.filter(unit => unit._HP > 0);
-            if (
-              aliveUnitCopyEnemiesFirstLane.length === 1 &&
-              aliveUnitCopyEnemiesFirstLane[0]._id === 5
-            ) {
-              console.log("AAAAAAAAAAAAAA");
-              enemies = aliveUnitCopyEnemiesFirstLane;
-              break;
-            }
-            copyEnemiesFirstLane.pop();
-            const targets: Array<Unit> = copyEnemiesFirstLane.filter(
-              unit => unit._HP > 0
-            );
-            enemies = targets;
-            break;
-          } else {
-            console.log("in first lane right ");
-            const copyEnemiesFirstLane: Array<Unit> = [...enemiesFirstLane];
-            const aliveUnitCopyEnemiesFirstLane: Array<
-              Unit
-            > = copyEnemiesFirstLane.filter(unit => unit._HP > 0);
-            if (
-              aliveUnitCopyEnemiesFirstLane.length === 1 &&
-              aliveUnitCopyEnemiesFirstLane[0]._id === 3
-            ) {
-              console.log("bbbbbb");
-              enemies = aliveUnitCopyEnemiesFirstLane;
-              break;
-            }
+      console.log("2 линия союзников", alliesSecondLane);
+      console.log("1 линя союзников", alliesFirstLane);
+      console.log("2 линия врагов", enemiesSecondLane);
+      console.log("1 линя врагов", enemiesFirstLane);
 
-            copyEnemiesFirstLane.shift();
-            const targets: Array<Unit> = copyEnemiesFirstLane.filter(
-              unit => unit._HP > 0
-            );
-            enemies = targets;
-            break;
+      let isUnitInSecondLine: boolean = false;
+
+      for (let index = 0; index < 3; ++index) {
+        if (alliesSecondLane[index]._id === unitPosition) {
+          isUnitInSecondLine = true;
+          break;
+        }
+      }
+
+      const getTargetsForUnitFirstLine = (
+        unitPosition: number,
+        alliesFirstLane: Array<Unit>,
+        enemiesFirstLane: Array<Unit>
+      ): Array<Unit> => {
+        for (let index = 0; index < 3; ++index) {
+          if (alliesFirstLane[index]._id === unitPosition) {
+            if (index === 0) {
+              console.log("left");
+              const copyEnemiesFirstLane: Array<Unit> = [...enemiesFirstLane];
+              const aliveTarget: Array<Unit> = copyEnemiesFirstLane.filter(
+                unit => unit._HP > 0
+              );
+              if (
+                aliveTarget.length === 1 &&
+                aliveTarget[0]._id === enemiesFirstLane[2]._id
+              )
+                return aliveTarget;
+              copyEnemiesFirstLane.pop();
+              console.log(copyEnemiesFirstLane);
+              return copyEnemiesFirstLane;
+            } else if (index === 1) {
+              console.log("center");
+              console.log(enemiesFirstLane);
+              return enemiesFirstLane;
+            } else if (index === 2) {
+              console.log("right");
+              const copyEnemiesFirstLane: Array<Unit> = [...enemiesFirstLane];
+              const aliveTarget: Array<Unit> = copyEnemiesFirstLane.filter(
+                unit => unit._HP > 0
+              );
+              if (
+                aliveTarget.length === 1 &&
+                aliveTarget[0]._id === enemiesFirstLane[0]._id
+              )
+                copyEnemiesFirstLane.shift();
+              console.log(copyEnemiesFirstLane);
+              return copyEnemiesFirstLane;
+            }
           }
         }
-      }
-      for (let index = 0; index < 3; ++index) {
-        if (alliesSecondLane[index]._id === unit._id) {
-          enemies = [];
+        return enemies;
+      };
+
+      if (isUnitInSecondLine) {
+        console.log("unit in second line");
+        let alliesDeadFirstLaneUnits: number = 0;
+        alliesFirstLane.forEach(unit => {
+          if (unit._HP === 0) ++alliesDeadFirstLaneUnits;
+        });
+        let enemiesDeadFirstLaneUnits: number = 0;
+        enemiesFirstLane.forEach(unit => {
+          if (unit._HP === 0) ++enemiesDeadFirstLaneUnits;
+        });
+        console.log("умерло врагов", enemiesDeadFirstLaneUnits);
+        console.log("умерло союзников", alliesDeadFirstLaneUnits);
+        if (alliesDeadFirstLaneUnits === 3 && enemiesDeadFirstLaneUnits === 3) {
+          console.log("умерли все союзники на 1 линии и все враги на 1 линии");
+          return getTargetsForUnitFirstLine(
+            unitPosition,
+            alliesSecondLane,
+            enemiesSecondLane
+          );
+        }
+        if (alliesDeadFirstLaneUnits === 3) {
+          console.log("умерли все союзники на 1 линии");
+          return getTargetsForUnitFirstLine(
+            unitPosition,
+            alliesSecondLane,
+            enemiesFirstLane
+          );
+        }
+      } else {
+        console.log("unit in first line");
+
+        let alliesDeadFirstLaneUnits: number = 0;
+        enemiesFirstLane.forEach(unit => {
+          if (unit._HP === 0) ++alliesDeadFirstLaneUnits;
+        });
+        if (alliesDeadFirstLaneUnits === 3) {
+          console.log("умерли все сщюзники на 1 линии");
+          return getTargetsForUnitFirstLine(
+            unitPosition,
+            alliesSecondLane,
+            enemiesSecondLane
+          );
+        } else {
+          console.log("не умерли все сщюзники на 1 линии");
+          return getTargetsForUnitFirstLine(
+            unitPosition,
+            alliesFirstLane,
+            enemiesFirstLane
+          );
         }
       }
-      let deathUnit: number = 0;
-      alliesFirstLane.forEach(unit => {
-        if (unit._HP === 0) ++deathUnit;
-      });
-      console.log("умершие юниты", deathUnit);
-      if (deathUnit === 3) {
-        console.log("all unit in first laine is died");
-        console.log(alliesFirstLane);
-        console.log(alliesSecondLane);
-      }
-      return enemies;
+
+      return [];
+    };
+    if (unitPosition > 5) {
+      const targets: Array<Unit> = getTargets(
+        battleField.slice(6, 12),
+        battleField.slice(0, 6),
+        unitPosition
+      );
+      return targets;
     } else {
-      let enemies: Array<Unit> = battleField.slice(6, 12);
-      const allies: Array<Unit> = battleField.slice(0, 6);
-
-      const alliesSecondLane: Array<Unit> = allies.slice(0, 3);
-      let alliesFirstLane: Array<Unit> = allies.slice(3, 6);
-      const enemiesFirstLane: Array<Unit> = enemies.slice(0, 3);
-      const enemiesSecondLane: Array<Unit> = enemies.slice(3, 6);
-
-      for (let index = 0; index < 3; ++index) {
-        console.log("index first lane", index);
-        if (alliesFirstLane[index]._id === unit._id) {
-          if (index === 1) {
-            console.log("in first lane center ");
-            enemies = enemiesFirstLane;
-            break;
-          } else if (index === 0) {
-            console.log("in first lane left ");
-            const copyEnemiesFirstLane: Array<Unit> = [...enemiesFirstLane];
-            const aliveUnitCopyEnemiesFirstLane: Array<
-              Unit
-            > = copyEnemiesFirstLane.filter(unit => unit._HP > 0);
-            if (
-              aliveUnitCopyEnemiesFirstLane.length === 1 &&
-              aliveUnitCopyEnemiesFirstLane[0]._id === 8
-            ) {
-              console.log("AAAAAAAAAAAAAA");
-              enemies = aliveUnitCopyEnemiesFirstLane;
-              break;
-            }
-
-            copyEnemiesFirstLane.pop();
-            const targets: Array<Unit> = copyEnemiesFirstLane.filter(
-              unit => unit._HP > 0
-            );
-            enemies = targets;
-            break;
-          } else {
-            console.log("in first lane right ");
-
-            console.log("in first lane right ");
-            const copyEnemiesFirstLane: Array<Unit> = [...enemiesFirstLane];
-            const aliveUnitCopyEnemiesFirstLane: Array<
-              Unit
-            > = copyEnemiesFirstLane.filter(unit => unit._HP > 0);
-            if (
-              aliveUnitCopyEnemiesFirstLane.length === 1 &&
-              aliveUnitCopyEnemiesFirstLane[0]._id === 6
-            ) {
-              console.log("bbbbbb");
-              enemies = aliveUnitCopyEnemiesFirstLane;
-              break;
-            }
-
-            copyEnemiesFirstLane.shift();
-            const targets: Array<Unit> = copyEnemiesFirstLane.filter(
-              unit => unit._HP > 0
-            );
-            enemies = targets;
-            break;
-          }
-        }
-      }
-
-      for (let index = 0; index < 3; ++index) {
-        if (alliesSecondLane[index]._id === unit._id) {
-          enemies = [];
-        }
-      }
-
-      let deathUnit: number = 0;
-      alliesFirstLane.forEach(unit => {
-        if (unit._HP === 0) ++deathUnit;
-      });
-      console.log("умершие юниты", deathUnit);
-      if (deathUnit === 3) {
-        console.log("all unit in first laine is died");
-        console.log(alliesFirstLane);
-        console.log(alliesSecondLane);
-      }
-      return enemies;
+      const targets: Array<Unit> = getTargets(
+        battleField.slice(0, 6),
+        battleField.slice(6, 12),
+        unitPosition
+      );
+      return targets;
     }
   }
 }

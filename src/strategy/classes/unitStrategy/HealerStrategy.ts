@@ -24,7 +24,7 @@ export default class HealerStrategy implements IStrategy {
     console.log(" Healer target selection");
 
     const copyBattleField = [...battleField];
-    if (unit._id > 6) return copyBattleField.splice(6, 12);
+    if (unit._id >= 6) return copyBattleField.splice(6, 12);
     else return copyBattleField.splice(0, 6);
   }
 }

@@ -51,7 +51,11 @@ export const UnitUI: FunctionComponent<UnitUIProps> = props => {
           ></progress> */}
             {props.HP}
           </div>
-          {props.isActive ? <div>Active</div> : <div></div>}
+          {props.isActive ? (
+            <div style={{ color: "yellow" }}>Active</div>
+          ) : (
+            <div></div>
+          )}
         </div>
       ) : (
         <div className="cell">
@@ -86,7 +90,11 @@ export const UnitUI: FunctionComponent<UnitUIProps> = props => {
           ></progress> */}
             {props.HP}
           </div>
-          {props.isActive ? <div>Active</div> : <div></div>}
+          {props.isActive ? (
+            <div style={{ color: "yellow" }}>Active</div>
+          ) : (
+            <div></div>
+          )}
         </div>
       )}
     </React.Fragment>

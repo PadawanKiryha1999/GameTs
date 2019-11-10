@@ -22,7 +22,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const unit = queue[0];
-    if (queue.length == 1 && queue[0]._HP <= 0) {
+    if (queue.length === 1 && queue[0]._HP === 0) {
+      const nextQueue = [...queue];
+      nextQueue.shift();
+      setQueue(nextQueue);
     } else {
       if (unit._HP <= 0) {
         const nextQueue = [...queue];
