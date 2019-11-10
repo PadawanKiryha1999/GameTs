@@ -1,0 +1,10 @@
+.app {
+  display: flex;
+  justify-content: space-between;
+  height: 100vh;
+  background: black;
+  flex-wrap: wrap;
+}
+progress::-webkit-progress-value {
+  background: green;
+}

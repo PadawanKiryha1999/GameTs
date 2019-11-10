@@ -1,0 +1,86 @@
+.battleField {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+progress::-moz-progress-bar {
+  background: black;
+}
+.image {
+  width: 100px;
+}
+.cell {
+  width: 30%;
+  height: 15%;
+  background: gray;
+  border: 2px solid orange;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.cell-atacked {
+  width: 30%;
+  height: 15%;
+  background: gray;
+  border: 2px solid green;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.cell__unit-info {
+  display: flex;
+  width: 100%;
+}
+.cell__unit-info__options {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.cell__unit-info__options__atack {
+  color: red;
+  width: 50%;
+}
+.cell__unit-info__options__atack--active {
+  color: red;
+  width: 50%;
+  border: 1px solid red;
+}
+.cell__unit-info__options__defense {
+  color: red;
+  width: 50%;
+}
+.cell__unit-info__image {
+  width: 50%;
+}
+.cell__HP {
+  height: 20%;
+}
+.cell__HP__bar {
+  width: 100%;
+  color: white;
+}
+.border {
+  width: 100%;
+  height: 20px;
+  background-color: red;
+  display: inline;
+}
+.row {
+  display: flex;
+}
+button {
+  background: white;
+  padding: 0px;
+}
+.border-button {
+  border-top: 10px solid aqua;
+}
+.centerPart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+}

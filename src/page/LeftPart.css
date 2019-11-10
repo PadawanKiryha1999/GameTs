@@ -1,0 +1,50 @@
+.left-part {
+  width: 15%;
+  color: aqua;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+.queue-cell {
+  width: 100%;
+  height: 7%;
+  background: gray;
+  border: 2px solid orange;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.queue-cell__unit-info {
+  display: flex;
+  width: 100%;
+}
+.queue-cell__unit-info__options {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.queue-cell__unit-info__options__atack {
+  color: red;
+  width: 50%;
+}
+.queue-cell__unit-info__options__atack--active {
+  color: red;
+  width: 50%;
+  border: 1px solid red;
+}
+.queue-cell__unit-info__options__defense {
+  color: red;
+  width: 50%;
+}
+.queue-cell__unit-info__image {
+  width: 50%;
+}
+.queue-cell__HP {
+  height: 20%;
+}
+.queue-cell__HP__bar {
+  width: 100%;
+  background-color: red;
+  color: white;
+}

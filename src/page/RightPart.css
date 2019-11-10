@@ -1,0 +1,6 @@
+.right-part {
+  width: 25%;
+  color: aqua;
+  display: flex;
+  justify-content: flex-end;
+}
