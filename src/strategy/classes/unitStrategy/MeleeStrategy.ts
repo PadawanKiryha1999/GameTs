@@ -6,7 +6,8 @@ export default class MeleeStrategy implements IStrategy {
     target: number,
     targets: number[],
     battleField: Array<Unit>,
-    HP: number[]
+    HP: number[],
+    isProtected: boolean[]
   ): number[] {
     const copyHP: number[] = [...HP];
     const { _damage } = battleField[atackingUnit];
@@ -16,13 +17,14 @@ export default class MeleeStrategy implements IStrategy {
       if (targets.indexOf(unit._id) === -1) {
       } else {
         console.log("do hp reduce");
-        unit.doHPreduce(_damage);
-        if (_damage >= HP[index]) copyHP[index] = 0;
-        else {
-          console.log("HP before", HP[index]);
-          copyHP[index] = HP[index] - _damage;
-          console.log("Hp after", copyHP[index]);
-        }
+        unit.doHPreduce(_damage, isProtected[index]);
+        console.log("Before action", copyHP);
+        copyHP[index] = unit.doHPUIReduce(
+          copyHP[index],
+          _damage,
+          isProtected[index]
+        );
+        console.log("After action", copyHP);
       }
     });
 

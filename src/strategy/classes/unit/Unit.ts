@@ -8,21 +8,20 @@ export default abstract class Unit implements IUnit {
   abstract _actionType: void;
   abstract _imgPath: string;
   abstract _id: number;
+  abstract _maxHP:number
 
   private strategy: IStrategy;
   constructor(strategy: IStrategy) {
     this.strategy = strategy;
   }
 
-
-  doDefenseAction(incomingDamage: number, curentHP: number) {
-    
-    console.log("defense");
-  }
-  doHPreduce(incomingDamage: number) {
-  
-    if (this._HP > incomingDamage) {
-      this._HP -= incomingDamage;
+  doHPreduce(incomingDamage: number, isProtected?: boolean) {
+    let damage = incomingDamage;
+    if (isProtected) {
+      damage = incomingDamage * 0.5;
+    }
+    if (this._HP > damage) {
+      this._HP -= damage;
     } else {
       this._HP = 0;
     }
@@ -30,7 +29,6 @@ export default abstract class Unit implements IUnit {
     return this._HP;
   }
   setAgentTarget() {
- 
     console.log("lala");
   }
   showInfo() {
@@ -41,19 +39,39 @@ export default abstract class Unit implements IUnit {
     return this._HP;
   }
 
+  doHPUIReduce(HPUI: number, incomingDamage: number, isProtected?: boolean) {
+    console.log("Its HPReduce UI");
+    console.log("Hp before atack", HPUI);
+    let damage = incomingDamage;
+    if (isProtected) {
+      damage = incomingDamage * 0.5;
+    }
+    if (damage >= HPUI) {
+      HPUI = 0;
+    } else {
+      HPUI -= damage;
+    }
+    console.log("Hp after atack", HPUI);
+    return HPUI;
+  }
+
   public doAction(
     atackingUnit: number,
     target: number,
     targets: number[],
     battleField: Array<Unit>,
-    HP: number[]
+    HP: number[],
+    isProtected?: boolean[],
+    support?: string
   ): number[] {
     return this.strategy.doAlgorithm(
       atackingUnit,
       target,
       targets,
       battleField,
-      HP
+      HP,
+      isProtected,
+      support
     );
   }
   public doSelect(battleField: Array<Unit>): Array<Unit> {

@@ -11,6 +11,7 @@ export default class SkeletonMageUnitInfo extends DefaultStrategy
   _actionType: void;
   _imgPath: any;
   _id: number;
+  _maxHP: number;
 
   constructor(id: number) {
     super(new MageStrategy());
@@ -20,5 +21,6 @@ export default class SkeletonMageUnitInfo extends DefaultStrategy
     this._initiative = 40;
     this._imgPath = img;
     this._id = id;
+    this._maxHP = 50;
   }
 }

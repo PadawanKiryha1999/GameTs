@@ -10,19 +10,74 @@ import { useState, useEffect } from "react";
 import { QueueUI } from "../src/page/QueueUI";
 import { UnitUI } from "../src/page/UnitUI";
 import { generateQueue } from "../src/Logic/Generatequeue";
-import ArcherStrategy from "./strategy/classes/unitStrategy/ArcherStrategy";
-import { number } from "prop-types";
+import { array } from "prop-types";
 
 const App: React.FC = () => {
   const unitsHP: number[] = UnitsArray.map(unit => {
     return unit._HP;
   });
+  const falseArray: boolean[] = Array(12).fill(false);
+  const [isHexed, setHexed] = useState(falseArray);
   const getQueue: Array<Unit> = generateQueue(UnitsArray);
   const [queue, setQueue] = useState(getQueue);
 
   useEffect(() => {
+    console.log("очередь", queue);
+    console.log("unit id", queue[0]._id);
+    console.log(" array of hexed", isHexed);
+    console.log(" array of hexed", isHexed[queue[0]._id]);
+    if (queue.length <= 6) {
+      const copyQueue: Array<Unit> = [...UnitsArray];
+
+      const arrayofAliveUnit: Array<Unit> = copyQueue.filter(
+        unit => unit._HP > 0
+      );
+      console.log("alive Unit");
+      const copyArrayOfAliveUnit: Array<Unit> = [...arrayofAliveUnit];
+      const sortTeamA: Array<Unit> = copyArrayOfAliveUnit.filter(
+        unit => unit._id >= 6
+      );
+      const sortTeamB: Array<Unit> = copyArrayOfAliveUnit.filter(
+        unit => unit._id < 6
+      );
+      console.log("команда A", sortTeamA);
+      console.log("команда b", sortTeamB);
+      if (sortTeamB.length === 0 || sortTeamA.length === 0) {
+        let winTeam: string = "";
+        if (sortTeamA.length > sortTeamB.length) winTeam = "Team Dire";
+        else winTeam = "Team Radiant";
+        alert(`Game over. ${winTeam} win.Start new game`);
+        window.location.reload();
+      }
+    }
+    if (queue.length === 0 || isHexed[queue[0]._id]) {
+      console.log("i tipa tut");
+      setPtotect(falseArray);
+
+      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
+      setHexed(falseArray);
+    }
+
     const unit = queue[0];
     if (queue.length === 1 && queue[0]._HP === 0) {
+      console.log("i kak bi tut");
+      setPtotect(falseArray);
+      /////сбросить хексы
+      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
+      setHexed(falseArray);
+    } else if (isHexed[queue[0]._id]) {
+      console.log("vot ono");
+      const hexedUnits = [...isHexed];
+      hexedUnits[unit._id] = true;
+      setHexed(hexedUnits);
+      setPtotect(falseArray);
+      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
+      setHexed(falseArray);
+    } else if (isHexed[unit._id]) {
+      console.log("esli v hekse");
+      const hexedUnits = [...isHexed];
+      hexedUnits[unit._id] = true;
+      setHexed(hexedUnits);
       const nextQueue = [...queue];
       nextQueue.shift();
       setQueue(nextQueue);
@@ -43,16 +98,23 @@ const App: React.FC = () => {
       }
     }
   }, [queue]);
+  const [isProtected, setPtotect] = useState(falseArray);
   const [target, setTarget] = useState();
   const [HP, setHP] = useState(unitsHP);
 
   const handleDefenseClick = (index: number): number => {
+    const protectedState: Array<boolean> = [...isProtected];
+    protectedState[index] = true;
+    setPtotect(protectedState);
     const nextQueue = [...queue];
     nextQueue.shift();
     setQueue(nextQueue);
-    if (nextQueue.length === 0) {
-      console.log("new queue");
-      setQueue(generateQueue(UnitsArray, "new turn"));
+    if (nextQueue.length === 0 || queue.length === 0 || isHexed[queue[0]._id]) {
+      console.log("i tipa tut");
+      setPtotect(falseArray);
+      /////сбросить хексы
+      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
+      setHexed(falseArray);
     }
 
     return 1;
@@ -65,19 +127,40 @@ const App: React.FC = () => {
       index,
       target,
       UnitsArray,
-      HP
+      HP,
+      isProtected
     );
+    console.log("выбранный юнит", selectedUnit._id);
+    console.log("выбранная цель", index);
+    if (selectedUnit._unitType === "paralyazer") {
+      console.log("its naga");
+      const copyIsHexed = [...isHexed];
+      console.log("до действия", copyIsHexed);
+      copyIsHexed[index] = true;
+      console.log("after действия", copyIsHexed);
+      setHexed(copyIsHexed);
+    }
+    console.log(isHexed);
     console.log(newHP);
     setHP(newHP);
-    // const hps = [...HP];
-    // hps[index] = HP[index] - UnitsArray[index].doHPreduce(1, 1);
-    // setHP(hps);
     const nextQueue = [...queue];
     nextQueue.shift();
     setQueue(nextQueue);
-    if (nextQueue.length === 0) {
-      console.log("new queue");
-      setQueue(generateQueue(UnitsArray, "new turn"));
+    // if (queue.length === 0) {
+    //   console.log("new queue");
+    //   setPtotect(falseArray);
+    //   ///сбросить хексы
+    //   setQueue(generateQueue(UnitsArray, "new turn"));
+    //   setHexed(falseArray);
+    // }
+    // ниже рабочий
+    if (nextQueue.length === 0 || queue.length === 0 || isHexed[queue[0]._id]) {
+      console.log("i kak bi tut");
+      setPtotect(falseArray);
+      /////сбросить хексы
+      console.log(isHexed);
+      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
+      setHexed(falseArray);
     }
 
     return 1;

@@ -10,8 +10,9 @@ export default class BanditUnitInfo extends DefaultStrategy
   _initiative: number;
   _actionType: void;
   _imgPath: any;
-  _id: number ;
-  
+  _id: number;
+  _maxHP: number;
+
   constructor(id: number) {
     super(new RangeStrategy());
     this._unitType = "range";
@@ -20,5 +21,6 @@ export default class BanditUnitInfo extends DefaultStrategy
     this._initiative = 60;
     this._imgPath = img;
     this._id = id;
+    this._maxHP = 45;
   }
 }

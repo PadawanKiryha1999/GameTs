@@ -6,7 +6,8 @@ export default class ArcherStrategy implements IStrategy {
     target: number,
     targets: number[],
     battleField: Array<Unit>,
-    HP: number[]
+    HP: number[],
+    isProtected: boolean[]
   ): number[] {
     console.log("Archer strategy ");
     console.log("atacking unit", atackingUnit);
@@ -15,14 +16,16 @@ export default class ArcherStrategy implements IStrategy {
     console.log("battlefield", battleField);
     console.log("HPs", HP);
     const copyHP: number[] = [...HP];
-    const { _damage } = battleField[atackingUnit];
+    let { _damage } = battleField[atackingUnit];
 
-    battleField[target].doHPreduce(_damage);
-    if (_damage >= HP[target]) copyHP[target] = 0;
-    else {
-      copyHP[target] = HP[target] - _damage;
-    }
-
+    battleField[target].doHPreduce(_damage, isProtected[target]);
+    console.log("Before action", copyHP);
+    copyHP[target] = battleField[target].doHPUIReduce(
+      copyHP[target],
+      _damage,
+      isProtected[target]
+    );
+    console.log("After action", copyHP);
     return copyHP;
   }
   public doTargetSelection(unit: Unit, battleField: Array<Unit>): Array<Unit> {

@@ -10,7 +10,8 @@ export default class SerenaUnitInfo extends DefaultStrategy
   _initiative: number;
   _actionType: void;
   _imgPath: any;
-  _id: number ;
+  _id: number;
+  _maxHP: number;
 
   constructor(id: number) {
     super(new HexerStrategy());
@@ -20,5 +21,6 @@ export default class SerenaUnitInfo extends DefaultStrategy
     this._initiative = 20;
     this._imgPath = img;
     this._id = id;
+    this._maxHP = 80;
   }
 }

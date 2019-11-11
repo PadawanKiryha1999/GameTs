@@ -6,7 +6,9 @@ export default interface IStrategy {
     target: number,
     targets: number[],
     battleField: Array<Unit>,
-    HP: number[]
+    HP: number[],
+    protecion?: boolean[],
+    support?:string
   ): number[];
   doTargetSelection(unit: Unit, battleField: Array<Unit>): Array<Unit>;
 }

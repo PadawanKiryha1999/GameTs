@@ -6,7 +6,8 @@ export default class MageStrategy implements IStrategy {
     target: number,
     targets: number[],
     battleField: Array<Unit>,
-    HP: number[]
+    HP: number[],
+    isProtected: boolean[]
   ): number[] {
     const copyHP: number[] = [...HP];
     const { _damage } = battleField[atackingUnit];
@@ -15,11 +16,14 @@ export default class MageStrategy implements IStrategy {
     battleField.forEach((unit, index) => {
       if (targets.indexOf(unit._id) === -1) {
       } else {
-        unit.doHPreduce(_damage);
-        if (_damage >= HP[index]) copyHP[index] = 0;
-        else {
-          copyHP[index] = HP[index] - _damage;
-        }
+        unit.doHPreduce(_damage, isProtected[index]);
+        console.log("Before action", copyHP);
+        copyHP[index] = unit.doHPUIReduce(
+          copyHP[index],
+          _damage,
+          isProtected[index]
+        );
+        console.log("After action", copyHP);
       }
     });
 

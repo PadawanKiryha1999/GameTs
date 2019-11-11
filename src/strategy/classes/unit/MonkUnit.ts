@@ -10,6 +10,7 @@ export default class MonkUnitInfo extends DefaultStrategy implements IUnitInfo {
   _actionType: void;
   _imgPath: any;
   _id: number;
+  _maxHP: number;
   constructor(id: number) {
     super(new HealerStrategy());
     this._unitType = "healer";
@@ -18,5 +19,6 @@ export default class MonkUnitInfo extends DefaultStrategy implements IUnitInfo {
     this._initiative = 20;
     this._imgPath = img;
     this._id = id;
+    this._maxHP = 70;
   }
 }

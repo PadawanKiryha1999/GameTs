@@ -12,15 +12,16 @@ export default class SkeletonUnitInfo extends DefaultStrategy
   _actionType: void;
   _imgPath: any;
   _id: number;
+  _maxHP: number;
 
   constructor(id: number) {
     super(new MeleeStrategy());
     this._unitType = "melee";
     this._HP = 100;
     this._damage = 25;
-    this._initiative = 150;
-    // this._initiative = 100;
+    this._initiative = 50;
     this._imgPath = img;
     this._id = id;
+    this._maxHP = 100;
   }
 }

@@ -6,7 +6,9 @@ export default class HexerStrategy implements IStrategy {
     target: number,
     targets: number[],
     battleField: Array<Unit>,
-    HP: number[]
+    HP: number[],
+    protection: undefined,
+    support: string
   ):number[] {
     console.log("Hexer strategy");
     return HP

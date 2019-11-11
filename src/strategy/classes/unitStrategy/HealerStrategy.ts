@@ -6,7 +6,9 @@ export default class HealerStrategy implements IStrategy {
     target: number,
     targets: number[],
     battleField: Array<Unit>,
-    HP: number[]
+    HP: number[],
+    protection: undefined,
+    support: string
   ): number[] {
     console.log("Healer strategy ");
     console.log("atacking unit", atackingUnit);
@@ -16,8 +18,17 @@ export default class HealerStrategy implements IStrategy {
     console.log("HPs", HP);
     const copyHP: number[] = [...HP];
     const { _damage } = battleField[atackingUnit];
-    battleField[target].doHPreduce(-_damage);
-    copyHP[target] = HP[target] + _damage;
+    const heal: number = _damage * -1;
+    const maxHP = battleField[target]._maxHP;
+    let currentHP = copyHP[target];
+    if (currentHP - heal > maxHP) {
+      currentHP = maxHP;
+      battleField[target]._HP = maxHP;
+    } else {
+      battleField[target].doHPreduce(heal);
+      copyHP[target] = battleField[target].doHPUIReduce(copyHP[target], heal);
+    }
+
     return copyHP;
   }
   public doTargetSelection(unit: Unit, battleField: Array<Unit>): Array<Unit> {

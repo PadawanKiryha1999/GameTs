@@ -6,8 +6,9 @@ export default interface IUnit {
   _initiative: number;
   _actionType: void;
   _imgPath: any;
-  doDefenseAction(incomingDamage: number, curentHP: number): void;
+  _maxHP:number
   setAgentTarget(): any;
-  doHPreduce(incomingDamage: number, curentHP: number): number;
+  doHPreduce(incomingDamage: number, isProtected?: boolean): number;
+  doHPUIReduce(HPUI: number, incomingDamage: number, isProtected: boolean):number;
   getHP(): void;
 }

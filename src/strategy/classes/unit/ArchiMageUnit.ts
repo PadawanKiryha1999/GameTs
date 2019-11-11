@@ -10,6 +10,7 @@ export default class ArchiMageUnitInfo extends Unit implements IUnitInfo {
   _actionType: void;
   _imgPath: any;
   _id: number;
+  _maxHP: number;
 
   constructor(id: number) {
     super(new MageStrategy());
@@ -19,5 +20,6 @@ export default class ArchiMageUnitInfo extends Unit implements IUnitInfo {
     this._initiative = 40;
     this._imgPath = img;
     this._id = id;
+    this._maxHP = 90;
   }
 }
