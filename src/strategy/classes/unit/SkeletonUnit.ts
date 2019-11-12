@@ -19,7 +19,8 @@ export default class SkeletonUnitInfo extends DefaultStrategy
     this._unitType = "melee";
     this._HP = 100;
     this._damage = 25;
-    this._initiative = 50;
+    this._initiative = 150;
+
     this._imgPath = img;
     this._id = id;
     this._maxHP = 100;

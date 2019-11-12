@@ -52,7 +52,9 @@ export const UnitUI: FunctionComponent<UnitUIProps> = props => {
             {props.HP}
           </div>
           {props.isActive ? (
-            <div style={{ color: "yellow" }}>Active</div>
+            <div className="activeUnit" style={{ color: "yellow" }}>
+              Active
+            </div>
           ) : (
             <div></div>
           )}
@@ -91,7 +93,9 @@ export const UnitUI: FunctionComponent<UnitUIProps> = props => {
             {props.HP}
           </div>
           {props.isActive ? (
-            <div style={{ color: "yellow" }}>Active</div>
+            <div className="activeUnit" style={{ color: "yellow" }}>
+              Active
+            </div>
           ) : (
             <div></div>
           )}

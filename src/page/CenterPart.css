@@ -1,5 +1,6 @@
 .battleField {
   width: 50%;
+  height: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -12,6 +13,7 @@ progress::-moz-progress-bar {
   width: 100px;
 }
 .cell {
+  align-items: center;
   width: 30%;
   height: 15%;
   background: gray;
@@ -32,6 +34,7 @@ progress::-moz-progress-bar {
 .cell__unit-info {
   display: flex;
   width: 100%;
+  height: 50%;
 }
 .cell__unit-info__options {
   width: 50%;
@@ -56,11 +59,17 @@ progress::-moz-progress-bar {
   width: 50%;
 }
 .cell__HP {
-  height: 20%;
+  height: 30%;
+  font-size: 30px;
+  color: #45343e;
 }
 .cell__HP__bar {
   width: 100%;
   color: white;
+}
+.activeUnit {
+  height: 20%;
+  font-size: 20px;
 }
 .border {
   width: 100%;
