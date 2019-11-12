@@ -86,10 +86,9 @@ const linesForAtack = (enemyArray: Array<Array<Unit>>): Array<Unit> => {
   });
   return string;
 };
-const getAtackedTargets = (pos: number, array: Array<Unit>): Array<Unit> => {
-  const filterFunction = (array: Array<Unit>): Array<Unit> => {
+const getAtackedTargets = (pos: number, array: Array<Unit>) => {
+  const filterFunction = (array: Array<Unit>) => {
     const a = array.filter(unit => typeof unit != "undefined");
-    console.log("after filter", a);
     return a;
   };
   let left = pos - 1;
@@ -101,12 +100,12 @@ const getAtackedTargets = (pos: number, array: Array<Unit>): Array<Unit> => {
   targets = filterFunction(targets);
   console.log(targets);
 
-  console.log(targets.some(unit => unit._HP > 0));
-
   let haveTarget = targets.some(unit => unit._HP > 0);
+  console.log(targets.some(unit => unit._HP > 0));
   while (!haveTarget) {
     --left;
     ++right;
+    console.log("lalalalalalaal");
     targets.unshift(array[left]);
     console.log("after extention left ", targets);
     targets.push(array[right]);
@@ -115,9 +114,7 @@ const getAtackedTargets = (pos: number, array: Array<Unit>): Array<Unit> => {
     targets = filterFunction(targets);
     console.log("after filter", targets);
     haveTarget = targets.some(unit => unit._HP > 0);
-    z++;
   }
-  console.log(z);
   return targets.filter(unit => unit);
 };
 
@@ -173,8 +170,8 @@ export default class MeleeStrategy implements IStrategy {
         unitPosition,
         arayTargets
       );
-      console.log("array targets", arayTargets);
-      return arayTargets;
+      console.log("array targets", realTarget);
+      return realTarget;
     }
     return [];
   }
