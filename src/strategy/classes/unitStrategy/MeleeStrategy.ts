@@ -1,5 +1,126 @@
 import IStrategy from "../../interface/IConcreteStrategy";
 import Unit from "../unit/Unit";
+import { number } from "prop-types";
+import IUnit from "../../interface/IUnit";
+interface ITeamObject {
+  ally: Array<Array<Unit>>;
+  enemy: Array<Array<Unit>>;
+}
+const create2Array = (someArray: Array<Unit>): Array<Array<Unit>> => {
+  const len = someArray.length;
+  const lenDivTwo = len / 2;
+  console.log("azaszza", lenDivTwo, len, 0, lenDivTwo);
+  const array = [];
+  // array.push(someArray.slice(3, 6), someArray.slice(0, 3));
+  array.push(someArray.slice(lenDivTwo, len), someArray.slice(0, lenDivTwo));
+  return array;
+};
+const getAllyAndEnemyTeam = (
+  unitId: number,
+  battleField: Array<Unit>
+): ITeamObject => {
+  console.log("Its buttleField must be const", battleField);
+  const len = battleField.length;
+  const lenDivTwo = len / 2;
+  const lenDivFour = len / 4;
+  const sumOFLenDivTwoLenDivFour = lenDivTwo + lenDivFour;
+  const copyBattleField = [...battleField];
+  // const teamB0 = battleField.slice(6, 9);
+  // const teamB1 = battleField.slice(9, 12);
+  const teamB0 = battleField.slice(lenDivTwo, sumOFLenDivTwoLenDivFour);
+  const teamB1 = battleField.slice(sumOFLenDivTwoLenDivFour, len);
+  const teamB = teamB1.concat(teamB0);
+  const teamA = battleField.slice(0, lenDivTwo);
+  let simpleArray = {
+    ally: teamA,
+    enemy: teamB
+  };
+  console.log(teamB.some(elem => elem._id == unitId));
+  if (teamB.some(elem => elem._id == unitId)) {
+    simpleArray = {
+      ally: teamB,
+      enemy: teamA
+    };
+  }
+  console.log(simpleArray);
+  const returnedObject = {
+    ally: create2Array(simpleArray.ally),
+    enemy: create2Array(simpleArray.enemy)
+  };
+  console.log();
+  console.log(returnedObject);
+  return returnedObject;
+};
+const getElemLane = (elem: number, array: Array<Array<Unit>>): number => {
+  let i = -1;
+  array.some((array, index) => {
+    const a = array.some(element => element._id == elem);
+    console.log("this is a", a);
+    if (a) {
+      i = index;
+      return index;
+    }
+  });
+  return i;
+};
+const funCanUnitAtack = (lane: number, a: Array<Array<Unit>>): boolean => {
+  const allyesBeforeUnit = a.slice(0, lane);
+  console.log("array allys before", allyesBeforeUnit);
+  console.log("allys array", a);
+  const canUnitAtack = allyesBeforeUnit.every(array =>
+    array.every(element => element._HP == 0)
+  );
+  return canUnitAtack;
+};
+const linesForAtack = (enemyArray: Array<Array<Unit>>): Array<Unit> => {
+  let string: Array<Unit> = [];
+  enemyArray.some((array, index) => {
+    // console.log("current string", array);
+    // console.log("current string index", index);
+    const a = array.some(unit => unit._HP > 0);
+    console.log(a);
+    if (a) {
+      string = array;
+      return string;
+    }
+  });
+  return string;
+};
+const getAtackedTargets = (pos: number, array: Array<Unit>): Array<Unit> => {
+  const filterFunction = (array: Array<Unit>): Array<Unit> => {
+    const a = array.filter(unit => typeof unit != "undefined");
+    console.log("after filter", a);
+    return a;
+  };
+  let left = pos - 1;
+  let right = pos + 1;
+  let z = 0;
+  let targets = [];
+  targets.push(array[left], array[pos], array[right]);
+  console.log(targets);
+  targets = filterFunction(targets);
+  console.log(targets);
+
+  console.log(targets.some(unit => unit._HP > 0));
+
+  let haveTarget = targets.some(unit => unit._HP > 0);
+  while (!haveTarget) {
+    --left;
+    ++right;
+    targets.unshift(array[left]);
+    console.log("after extention left ", targets);
+    targets.push(array[right]);
+    console.log("after extention right ", targets);
+
+    targets = filterFunction(targets);
+    console.log("after filter", targets);
+    haveTarget = targets.some(unit => unit._HP > 0);
+    z++;
+  }
+  console.log(z);
+  return targets.filter(unit => unit);
+};
+
 export default class MeleeStrategy implements IStrategy {
   public doAlgorithm(
     atackingUnit: number,
@@ -29,155 +150,30 @@ export default class MeleeStrategy implements IStrategy {
     console.log("its buttleField after deal damage", battleField);
     return copyHP;
   }
+
   public doTargetSelection(unit: Unit, battleField: Array<Unit>): Array<Unit> {
-    const unitPosition: number = unit._id;
-    const getTargets = (
-      allies: Array<Unit>,
-      enemies: Array<Unit>,
-      unitPosition: number
-    ): Array<Unit> => {
-      let alliesFirstLane: Array<Unit> = [];
-      let alliesSecondLane: Array<Unit> = [];
-      let enemiesSecondLane: Array<Unit> = [];
-      let enemiesFirstLane: Array<Unit> = [];
-      if (unitPosition <= 5) {
-        alliesFirstLane = allies.slice(3, 6);
-        alliesSecondLane = allies.slice(0, 3);
-        enemiesSecondLane = enemies.slice(3, 6);
-        enemiesFirstLane = enemies.slice(0, 3);
-      } else {
-        alliesFirstLane = allies.slice(0, 3);
-        alliesSecondLane = allies.slice(3, 6);
-        enemiesSecondLane = enemies.slice(0, 3);
-        enemiesFirstLane = enemies.slice(3, 6);
-      }
+    // const ally = getAllyAndEnemyTeam(unit._id, battleField).ally;
+    // const enemy = getAllyAndEnemyTeam(unit._id, battleField).enemy;
 
-      console.log("2 линия союзников", alliesSecondLane);
-      console.log("1 линя союзников", alliesFirstLane);
-      console.log("2 линия врагов", enemiesSecondLane);
-      console.log("1 линя врагов", enemiesFirstLane);
-
-      let isUnitInSecondLine: boolean = false;
-
-      for (let index = 0; index < 3; ++index) {
-        if (alliesSecondLane[index]._id === unitPosition) {
-          isUnitInSecondLine = true;
-          break;
-        }
-      }
-
-      const getTargetsForUnitFirstLine = (
-        unitPosition: number,
-        alliesFirstLane: Array<Unit>,
-        enemiesFirstLane: Array<Unit>
-      ): Array<Unit> => {
-        for (let index = 0; index < 3; ++index) {
-          if (alliesFirstLane[index]._id === unitPosition) {
-            if (index === 0) {
-              console.log("left");
-              const copyEnemiesFirstLane: Array<Unit> = [...enemiesFirstLane];
-              const aliveTarget: Array<Unit> = copyEnemiesFirstLane.filter(
-                unit => unit._HP > 0
-              );
-              if (
-                aliveTarget.length === 1 &&
-                aliveTarget[0]._id === enemiesFirstLane[2]._id
-              )
-                return aliveTarget;
-              copyEnemiesFirstLane.pop();
-              console.log(copyEnemiesFirstLane);
-              return copyEnemiesFirstLane;
-            } else if (index === 1) {
-              console.log("center");
-              console.log(enemiesFirstLane);
-              return enemiesFirstLane;
-            } else if (index === 2) {
-              console.log("right");
-              const copyEnemiesFirstLane: Array<Unit> = [...enemiesFirstLane];
-              const aliveTarget: Array<Unit> = copyEnemiesFirstLane.filter(
-                unit => unit._HP > 0
-              );
-              if (
-                aliveTarget.length === 1 &&
-                aliveTarget[0]._id === enemiesFirstLane[0]._id
-              )
-                copyEnemiesFirstLane.shift();
-              console.log(copyEnemiesFirstLane);
-              return copyEnemiesFirstLane;
-            }
-          }
-        }
-        return enemies;
-      };
-
-      if (isUnitInSecondLine) {
-        console.log("unit in second line");
-        let alliesDeadFirstLaneUnits: number = 0;
-        alliesFirstLane.forEach(unit => {
-          if (unit._HP === 0) ++alliesDeadFirstLaneUnits;
-        });
-        let enemiesDeadFirstLaneUnits: number = 0;
-        enemiesFirstLane.forEach(unit => {
-          if (unit._HP === 0) ++enemiesDeadFirstLaneUnits;
-        });
-        console.log("умерло врагов", enemiesDeadFirstLaneUnits);
-        console.log("умерло союзников", alliesDeadFirstLaneUnits);
-        if (alliesDeadFirstLaneUnits === 3 && enemiesDeadFirstLaneUnits === 3) {
-          console.log("умерли все союзники на 1 линии и все враги на 1 линии");
-          return getTargetsForUnitFirstLine(
-            unitPosition,
-            alliesSecondLane,
-            enemiesSecondLane
-          );
-        }
-        if (alliesDeadFirstLaneUnits === 3) {
-          console.log("умерли все союзники на 1 линии");
-          return getTargetsForUnitFirstLine(
-            unitPosition,
-            alliesSecondLane,
-            enemiesFirstLane
-          );
-        }
-      } else {
-        console.log("unit in first line");
-
-        let alliesDeadFirstLaneUnits: number = 0;
-        enemiesFirstLane.forEach(unit => {
-          if (unit._HP === 0) ++alliesDeadFirstLaneUnits;
-        });
-        if (alliesDeadFirstLaneUnits === 3) {
-          console.log("умерли все сщюзники на 1 линии");
-          return getTargetsForUnitFirstLine(
-            unitPosition,
-            alliesSecondLane,
-            enemiesSecondLane
-          );
-        } else {
-          console.log("не умерли все сщюзники на 1 линии");
-          return getTargetsForUnitFirstLine(
-            unitPosition,
-            alliesFirstLane,
-            enemiesFirstLane
-          );
-        }
-      }
-
-      return [];
-    };
-    if (unitPosition > 5) {
-      const targets: Array<Unit> = getTargets(
-        battleField.slice(6, 12),
-        battleField.slice(0, 6),
-        unitPosition
+    const { ally, enemy } = getAllyAndEnemyTeam(unit._id, battleField);
+    console.log("ally", ally);
+    console.log("enemy", enemy);
+    const unitLane = getElemLane(unit._id, ally);
+    const unitPosition = ally[unitLane].indexOf(unit);
+    console.log("unit lane", unitLane);
+    console.log("unit position", unitPosition);
+    const canUnitAtack = funCanUnitAtack(unitLane, ally);
+    console.log("Can unit Atack?", canUnitAtack);
+    if (canUnitAtack) {
+      const arayTargets = linesForAtack(enemy);
+      console.log("line for atack", arayTargets);
+      const realTarget: Array<Unit> = getAtackedTargets(
+        unitPosition,
+        arayTargets
       );
-      return targets;
-    } else {
-      const targets: Array<Unit> = getTargets(
-        battleField.slice(0, 6),
-        battleField.slice(6, 12),
-        unitPosition
-      );
-      return targets;
+      console.log("array targets", arayTargets);
+      return arayTargets;
     }
+    return [];
   }
 }

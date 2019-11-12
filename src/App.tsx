@@ -157,15 +157,9 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      {/* <LeftPart
-        units={UnitsArray}
-        onClick={() => {
-          handleClick();
-        }}
-      /> */}
-      <div className="left-part">{renderLeftPart()}</div>;
-      {/* <CenterPartV2 units={UnitsArray} /> */}
-      <div className="battleField">{renderCenterPart()}</div>;
+      <div className="left-part">{renderLeftPart()}</div>
+
+      <React.Fragment>{renderCenterPart()}</React.Fragment>
       <RightPart />
     </div>
   );

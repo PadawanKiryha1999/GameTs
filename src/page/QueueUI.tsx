@@ -25,9 +25,9 @@ export const QueueUI: FunctionComponent<QueueUIProps> = props => {
           />
           <div className="queue-cell__unit-info__options">
             <div className="queue-cell__unit-info__options__defense">
-              <button onClick={() => {}}>
-                <img src={defense} width={40} alt="img" />
-              </button>
+              {/* <button onClick={() => {}}>
+                <img src={defense} width={30} alt="img" />
+              </button> */}
             </div>
           </div>
         </div>

@@ -26,6 +26,11 @@ export default class MageStrategy implements IStrategy {
     console.log(battleField);
     return copyHP;
   }
+
+
+
+
+  
   public doTargetSelection(unit: Unit, battleField: Array<Unit>): Array<Unit> {
     console.log(" Mage target selection");
 

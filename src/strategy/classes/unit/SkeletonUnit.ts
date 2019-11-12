@@ -19,7 +19,10 @@ export default class SkeletonUnitInfo extends DefaultStrategy
     this._HP = 100;
     this._damage = 25;
     this._initiative = 150;
+<<<<<<< Updated upstream
     // this._initiative = 100;
+=======
+>>>>>>> Stashed changes
     this._imgPath = img;
     this._id = id;
   }

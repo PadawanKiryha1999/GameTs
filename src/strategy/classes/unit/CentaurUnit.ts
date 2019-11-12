@@ -18,7 +18,11 @@ export default class CentaurUnitInfo extends DefaultStrategy
     this._HP = 150;
     this._damage = 50;
     this._initiative = 150;
+<<<<<<< Updated upstream
     // this._initiative = 100;
+=======
+    this._maxHP = 150;
+>>>>>>> Stashed changes
     this._imgPath = img;
     this._id = id;
   }
