@@ -9,24 +9,50 @@
 progress::-moz-progress-bar {
   background: black;
 }
-.image {
-  width: 100px;
-}
-.cell {
+.pereopr {
   align-items: center;
   width: 30%;
   height: 15%;
   background: gray;
-  border: 2px solid orange;
+  border: 4px solid #00ff33;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.image {
+  width: 100px;
+}
+.defense-button {
+  background: grey;
+  border: none;
+}
+.cell {
+  opacity: 0.2;
+  align-items: center;
+  width: 30%;
+  height: 15%;
+  background: gray;
+  border: 4px solid orange;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.cell-active {
+  align-items: center;
+  width: 30%;
+  height: 15%;
+  background: gray;
+  border: 4px solid #00ff33;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 .cell-atacked {
+  align-items: center;
   width: 30%;
   height: 15%;
   background: gray;
-  border: 4px solid green;
+  border: 4px solid red;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -34,13 +60,16 @@ progress::-moz-progress-bar {
 .cell__unit-info {
   display: flex;
   width: 100%;
-  height: 50%;
+  height: 100%;
+  flex-wrap: wrap;
 }
 .cell__unit-info__options {
-  width: 50%;
+  width: 100%;
+  height: 50%;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 }
 .cell__unit-info__options__atack {
   color: red;
@@ -56,12 +85,17 @@ progress::-moz-progress-bar {
   width: 50%;
 }
 .cell__unit-info__image {
-  width: 50%;
+  width: 100%;
+  height: 50%;
+}
+.cell__unit-info__image_without-defense {
+  width: 100%;
+  height: 50%;
 }
 .cell__HP {
   height: 30%;
   font-size: 30px;
-  color: #45343e;
+  color: green;
 }
 .cell__HP__bar {
   width: 100%;

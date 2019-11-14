@@ -11,93 +11,123 @@ import { QueueUI } from "../src/page/QueueUI";
 import { UnitUI } from "../src/page/UnitUI";
 import { generateQueue } from "../src/Logic/Generatequeue";
 import { array } from "prop-types";
+import { inheritTrailingComments } from "@babel/types";
+
+const useStateWithCallback = (initialState: any, callback: any) => {
+  const [state, setState] = useState(initialState);
+
+  useEffect(() => callback(state), [state, callback]);
+
+  return [state, setState];
+};
 
 const App: React.FC = () => {
   const unitsHP: number[] = UnitsArray.map(unit => {
     return unit._HP;
   });
   const falseArray: boolean[] = Array(12).fill(false);
-  const [isHexed, setHexed] = useState(falseArray);
+  const [isHexed, setHexed] = useStateWithCallback(
+    falseArray,
+    (newarray: boolean[]) => {
+      console.table(newarray);
+      console.table(isHexed);
+      const a = newarray.every((el, index) => el === isHexed[index]);
+      if (!a) {
+        alert("asdasfdsgsag");
+      }
+      //
+      // debugger;
+    }
+  );
+
   const getQueue: Array<Unit> = generateQueue(UnitsArray);
   const [queue, setQueue] = useState(getQueue);
 
+  interface ITeamObject {
+    ally: Array<Unit>;
+    enemy: Array<Unit>;
+  }
+  const filterHP = (array: Array<Unit>): Array<Unit> => {
+    const a: Array<Unit> = array.filter(unit => unit._HP > 0);
+    return a;
+  };
+
+  const getAllyAndEnemyTeam = (
+    unitId: number,
+    battleField: Array<Unit>
+  ): ITeamObject => {
+    console.log("Its buttleField must be const", battleField);
+    const len = battleField.length;
+    const lenDivTwo = len / 2;
+    const lenDivFour = len / 4;
+    const sumOFLenDivTwoLenDivFour = lenDivTwo + lenDivFour;
+    const copyBattleField = [...battleField];
+    // const teamB0 = battleField.slice(6, 9);
+    // const teamB1 = battleField.slice(9, 12);
+    const teamB0 = battleField.slice(lenDivTwo, sumOFLenDivTwoLenDivFour);
+    const teamB1 = battleField.slice(sumOFLenDivTwoLenDivFour, len);
+    const teamB = teamB1.concat(teamB0);
+    const teamA = battleField.slice(0, lenDivTwo);
+    let simpleArray = {
+      ally: teamA,
+      enemy: teamB
+    };
+    console.log(teamB.some(elem => elem._id == unitId));
+    if (teamB.some(elem => elem._id == unitId)) {
+      simpleArray = {
+        ally: teamB,
+        enemy: teamA
+      };
+    }
+    console.log(simpleArray);
+    return simpleArray;
+  };
+
+  const generateNewRound = () => {
+    setPtotect(falseArray);
+    setQueue(generateQueue(UnitsArray, "new turn", isHexed));
+    setHexed(Array(12).fill(false));
+  };
+
+  const skipTurn = () => {
+    const nextQueue = [...queue];
+    nextQueue.shift();
+    setQueue(nextQueue);
+    if (nextQueue.length === 0) {
+      generateNewRound();
+    }
+  };
+
   useEffect(() => {
     console.log("очередь", queue);
+    console.log("type of queue", typeof queue);
     console.log("unit id", queue[0]._id);
     console.log(" array of hexed", isHexed);
     console.log(" array of hexed", isHexed[queue[0]._id]);
-    if (queue.length <= 6) {
-      const copyQueue: Array<Unit> = [...UnitsArray];
-
-      const arrayofAliveUnit: Array<Unit> = copyQueue.filter(
-        unit => unit._HP > 0
-      );
-      console.log("alive Unit");
-      const copyArrayOfAliveUnit: Array<Unit> = [...arrayofAliveUnit];
-      const sortTeamA: Array<Unit> = copyArrayOfAliveUnit.filter(
-        unit => unit._id >= 6
-      );
-      const sortTeamB: Array<Unit> = copyArrayOfAliveUnit.filter(
-        unit => unit._id < 6
-      );
-      console.log("команда A", sortTeamA);
-      console.log("команда b", sortTeamB);
-      if (sortTeamB.length === 0 || sortTeamA.length === 0) {
-        let winTeam: string = "";
-        if (sortTeamA.length > sortTeamB.length) winTeam = "Team Dire";
-        else winTeam = "Team Radiant";
-        alert(`Game over. ${winTeam} win.Start new game`);
-        window.location.reload();
-      }
-    }
-    if (queue.length === 0 || isHexed[queue[0]._id]) {
-      console.log("i tipa tut");
-      setPtotect(falseArray);
-
-      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
-      setHexed(falseArray);
-    }
-
     const unit = queue[0];
-    if (queue.length === 1 && queue[0]._HP === 0) {
-      console.log("i kak bi tut");
-      setPtotect(falseArray);
-      /////сбросить хексы
-      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
-      setHexed(falseArray);
-    } else if (isHexed[queue[0]._id]) {
-      console.log("vot ono");
-      const hexedUnits = [...isHexed];
-      hexedUnits[unit._id] = true;
-      setHexed(hexedUnits);
-      setPtotect(falseArray);
-      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
-      setHexed(falseArray);
-    } else if (isHexed[unit._id]) {
-      console.log("esli v hekse");
-      const hexedUnits = [...isHexed];
-      hexedUnits[unit._id] = true;
-      setHexed(hexedUnits);
-      const nextQueue = [...queue];
-      nextQueue.shift();
-      setQueue(nextQueue);
-    } else {
-      if (unit._HP <= 0) {
-        const nextQueue = [...queue];
-        nextQueue.shift();
-        setQueue(nextQueue);
-      } else {
-        const targetsForAction: Array<Unit> = unit.doSelect(UnitsArray);
+    const { ally, enemy } = getAllyAndEnemyTeam(unit._id, UnitsArray);
+    const filteredAlly = filterHP(ally);
+    const filteredEnemy = filterHP(enemy);
 
-        const a: number[] = [];
-        const idTargets: number[] = targetsForAction.map(unit => {
-          a.push(unit._id);
-          return unit._id;
-        });
-        setTarget(idTargets);
-      }
+    if (filteredAlly.length === 0 || filteredEnemy.length === 0) {
+      alert("Game over.Attacking team win! Start new Game");
+      window.location.reload();
     }
-  }, [queue]);
+    console.log("ally", ally);
+    console.log("enemy", enemy);
+    console.log(filteredAlly, filteredEnemy);
+    if (unit._HP == 0 || isHexed[unit._id]) {
+      skipTurn();
+    }
+
+    const targetsForAction: Array<Unit> = unit.doSelect(UnitsArray);
+    const a: number[] = [];
+    const idTargets: number[] = targetsForAction.map(unit => {
+      a.push(unit._id);
+      return unit._id;
+    });
+    setTarget(idTargets);
+  }, [queue, isHexed]);
   const [isProtected, setPtotect] = useState(falseArray);
   const [target, setTarget] = useState();
   const [HP, setHP] = useState(unitsHP);
@@ -106,21 +136,12 @@ const App: React.FC = () => {
     const protectedState: Array<boolean> = [...isProtected];
     protectedState[index] = true;
     setPtotect(protectedState);
-    const nextQueue = [...queue];
-    nextQueue.shift();
-    setQueue(nextQueue);
-    if (nextQueue.length === 0 || queue.length === 0 || isHexed[queue[0]._id]) {
-      console.log("i tipa tut");
-      setPtotect(falseArray);
-      /////сбросить хексы
-      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
-      setHexed(falseArray);
-    }
+    skipTurn();
+    console.log("after skip");
 
     return 1;
   };
   const handleClick = (index: number): number => {
-    // (index===0) ? console.log(index) : console.log(index);
     const selectedUnit: Unit = queue[0];
     const newHP: number[] = selectedUnit.doAction(
       selectedUnit._id,
@@ -140,29 +161,9 @@ const App: React.FC = () => {
       console.log("after действия", copyIsHexed);
       setHexed(copyIsHexed);
     }
-    console.log(isHexed);
-    console.log(newHP);
-    setHP(newHP);
-    const nextQueue = [...queue];
-    nextQueue.shift();
-    setQueue(nextQueue);
-    // if (queue.length === 0) {
-    //   console.log("new queue");
-    //   setPtotect(falseArray);
-    //   ///сбросить хексы
-    //   setQueue(generateQueue(UnitsArray, "new turn"));
-    //   setHexed(falseArray);
-    // }
-    // ниже рабочий
-    if (nextQueue.length === 0 || queue.length === 0 || isHexed[queue[0]._id]) {
-      console.log("i kak bi tut");
-      setPtotect(falseArray);
-      /////сбросить хексы
-      console.log(isHexed);
-      setQueue(generateQueue(UnitsArray, "new turn", isHexed));
-      setHexed(falseArray);
-    }
+    skipTurn();
 
+    setHP(newHP);
     return 1;
   };
 
@@ -185,8 +186,6 @@ const App: React.FC = () => {
     return unitsArrayUI;
   };
   const isAtcaked: any = (index: number, unit: Unit) => {
-    // if (target.indexof(index)) return true;
-    // else return false;
     if (target === undefined) {
     } else {
       if (target.indexOf(index) === -1 || HP[index] <= 0) {
@@ -206,6 +205,8 @@ const App: React.FC = () => {
               currentIndex={index}
               underAtack={isAtcaked(index, unit)}
               isActive={queue[0]._id === index ? true : false}
+              hexed={isHexed[index]}
+              protected={isProtected[index]}
               onClick={() => {
                 handleClick(index);
               }}
@@ -224,6 +225,8 @@ const App: React.FC = () => {
           currentUnit={unit}
           currentIndex={index}
           isActive={queue[0]._id === index ? true : false}
+          hexed={isHexed[index]}
+          protected={isProtected[index]}
           underAtack={isAtcaked(index, unit)}
           onClick={() => {
             handleClick(index);

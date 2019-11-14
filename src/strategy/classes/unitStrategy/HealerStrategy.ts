@@ -21,13 +21,11 @@ export default class HealerStrategy implements IStrategy {
     const heal: number = _damage * -1;
     const maxHP = battleField[target]._maxHP;
     let currentHP = copyHP[target];
-    if (currentHP - heal > maxHP) {
-      currentHP = maxHP;
-      battleField[target]._HP = maxHP;
-    } else {
+    console.log("Hp before heal",currentHP)
+    
       battleField[target].doHPreduce(heal);
       copyHP[target] = battleField[target].doHPUIReduce(copyHP[target], heal);
-    }
+    
 
     return copyHP;
   }

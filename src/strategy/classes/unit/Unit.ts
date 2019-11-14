@@ -8,7 +8,7 @@ export default abstract class Unit implements IUnit {
   abstract _actionType: void;
   abstract _imgPath: string;
   abstract _id: number;
-  abstract _maxHP:number
+  abstract _maxHP: number;
 
   private strategy: IStrategy;
   constructor(strategy: IStrategy) {
@@ -20,7 +20,18 @@ export default abstract class Unit implements IUnit {
     if (isProtected) {
       damage = incomingDamage * 0.5;
     }
-    if (this._HP > damage) {
+    if (damage < 0) {
+      const heal = damage * -1;
+      console.log("heal ", heal);
+      if (this._HP + heal >= this._maxHP) {
+        console.log("bigger");
+        this._HP = this._maxHP;
+      } else {
+        console.log("lover");
+        this._HP = this._HP + heal;
+      }
+    }
+    else if (this._HP > damage) {
       this._HP -= damage;
     } else {
       this._HP = 0;
@@ -43,10 +54,23 @@ export default abstract class Unit implements IUnit {
     console.log("Its HPReduce UI");
     console.log("Hp before atack", HPUI);
     let damage = incomingDamage;
+    console.log("будет хил", damage, this._maxHP);
     if (isProtected) {
       damage = incomingDamage * 0.5;
     }
-    if (damage >= HPUI) {
+    if (damage < 0) {
+      const heal = damage * -1;
+      console.log("heal UI");
+      if (HPUI + heal >= this._maxHP) {
+        console.log("max HP hp UI", this._maxHP);
+        HPUI = this._maxHP;
+        console.log("HPUI heal + hp >");
+      } else {
+        HPUI = HPUI + heal;
+        console.log("HPUI heal + hp <");
+      }
+    }
+    else if (damage >= HPUI) {
       HPUI = 0;
     } else {
       HPUI -= damage;

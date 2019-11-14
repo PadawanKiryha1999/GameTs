@@ -93,7 +93,7 @@ const getAtackedTargets = (pos: number, array: Array<Unit>) => {
   };
   let left = pos - 1;
   let right = pos + 1;
-  let z = 0;
+
   let targets = [];
   targets.push(array[left], array[pos], array[right]);
   console.log(targets);
@@ -129,48 +129,27 @@ export default class MeleeStrategy implements IStrategy {
   ): number[] {
     const copyHP: number[] = [...HP];
     const { _damage } = battleField[atackingUnit];
-    console.log("atackingUnit", atackingUnit);
-    console.log("targets", targets);
-    battleField.forEach((unit, index) => {
-      if (targets.indexOf(unit._id) === -1) {
-      } else {
-        console.log("do hp reduce");
-        unit.doHPreduce(_damage, isProtected[index]);
-        console.log("Before action", copyHP);
-        copyHP[index] = unit.doHPUIReduce(
-          copyHP[index],
-          _damage,
-          isProtected[index]
-        );
-        console.log("After action", copyHP);
-      }
-    });
-
-    console.log("its buttleField after deal damage", battleField);
+    battleField[target].doHPreduce(_damage, isProtected[target]);
+    copyHP[target] = battleField[target].doHPUIReduce(
+      copyHP[target],
+      _damage,
+      isProtected[target]
+    );
     return copyHP;
   }
 
   public doTargetSelection(unit: Unit, battleField: Array<Unit>): Array<Unit> {
-    // const ally = getAllyAndEnemyTeam(unit._id, battleField).ally;
-    // const enemy = getAllyAndEnemyTeam(unit._id, battleField).enemy;
-
     const { ally, enemy } = getAllyAndEnemyTeam(unit._id, battleField);
-    console.log("ally", ally);
-    console.log("enemy", enemy);
     const unitLane = getElemLane(unit._id, ally);
     const unitPosition = ally[unitLane].indexOf(unit);
-    console.log("unit lane", unitLane);
-    console.log("unit position", unitPosition);
     const canUnitAtack = funCanUnitAtack(unitLane, ally);
-    console.log("Can unit Atack?", canUnitAtack);
     if (canUnitAtack) {
       const arayTargets = linesForAtack(enemy);
-      console.log("line for atack", arayTargets);
+
       const realTarget: Array<Unit> = getAtackedTargets(
         unitPosition,
         arayTargets
       );
-      console.log("array targets", realTarget);
       return realTarget;
     }
     return [];

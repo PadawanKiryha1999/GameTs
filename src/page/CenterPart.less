@@ -9,36 +9,67 @@
 progress::-moz-progress-bar {
   background: black;
 }
-.image {
-  width: 100px;
-}
-.cell {
+.pereopr {
   align-items: center;
   width: 30%;
   height: 15%;
   background: gray;
-  border: 2px solid orange;
+  border: 4px solid rgb(0, 255, 51);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  &-atacked {
+}
+.image {
+  width: 100px;
+}
+.defense-button {
+  background: grey;
+  border: none;
+}
+.cell {
+  opacity: 0.2;
+  align-items: center;
+  width: 30%;
+  height: 15%;
+  background: gray;
+  border: 4px solid orange;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  &-active {
+    align-items: center;
     width: 30%;
     height: 15%;
     background: gray;
-    border: 4px solid green;
+    border: 4px solid rgb(0, 255, 51);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
   }
+  &-atacked {
+    align-items: center;
+    width: 30%;
+    height: 15%;
+    background: gray;
+    border: 4px solid red;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
   &__unit-info {
     display: flex;
     width: 100%;
-    height: 50%;
+    height: 100%;
+    flex-wrap: wrap;
     &__options {
-      width: 50%;
+      width: 100%;
+      height: 50%;
       display: flex;
       flex-direction: row;
       align-items: center;
+      justify-content: center;
       &__atack {
         color: red;
         width: 50%;
@@ -56,13 +87,18 @@ progress::-moz-progress-bar {
       }
     }
     &__image {
-      width: 50%;
+      width: 100%;
+      height: 50%;
+      &_without-defense {
+        width: 100%;
+        height: 50%;
+      }
     }
   }
   &__HP {
     height: 30%;
     font-size: 30px;
-    color: rgb(69, 52, 62);
+    color: green;
     &__bar {
       width: 100%;
       // background-color: red;
